@@ -3,10 +3,21 @@
 Official ModelContextProtocol (MCP) server for [Shadcn Space](https://shadcnspace.com).
 
 ## Install MCP configuration
+```bash
+npx shadcnspace-cli install <client>
+```
 
-### Claude Desktop
+### Supported Clients
 
-To use with Claude Desktop, add the following to your `claude_desktop_config.json`:
+- [x] cursor
+- [x] windsurf
+- [x] claude
+- [x] cline
+- [x] antigravity
+
+## Manual Installation
+
+Add to your IDE's MCP config:
 
 ```json
 {
