@@ -36,8 +36,18 @@ The server provides the following tools callable via MCP:
 
 | Tool Name | Description |
 |-----------|-------------|
-| `getUIBlocks` | Provides a comprehensive list of all shadcnspace blocks. |
-| `getUIBlock` | Get full implementation details of a specific shadcnspace block by name. |
+| `listBlocks` | Provides a comprehensive list of all shadcnspace blocks. |
+| `addBlock` | Get full implementation details of a specific shadcnspace block by name. |
+
+## Available Tools
+
+The server provides the following prompts callable via MCP:
+
+| Prompt/Command | Description |
+|----------------|-------------|
+| `search`       | Find specific UI block by name. |
+| `create-ui`    | Create a new UI block using our exisitng blocks. |
+
 
 ## Example Usage
 
