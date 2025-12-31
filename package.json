@@ -39,6 +39,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shadcnspace/shadcnspace-mcp.git"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.24.3",
     "zod": "^3.25.76"
