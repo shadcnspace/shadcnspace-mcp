@@ -39,7 +39,7 @@ The server provides the following tools callable via MCP:
 | `listBlocks` | Provides a comprehensive list of all shadcnspace blocks. |
 | `addBlock` | Get full implementation details of a specific shadcnspace block by name. |
 
-## Available Tools
+## Available Prompts
 
 The server provides the following prompts callable via MCP:
 
