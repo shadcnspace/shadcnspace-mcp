@@ -57,6 +57,8 @@ Once configured, you can ask questions like:
 
 > "Give me the code for the download-banner block"
 
+> "Create a landing page for a coffee shop using a hero-01 block, a 3-column feature grid, and a dark-themed footer."
+
 ## Credits
 
 Created by [shadcnspace](https://shadcnspace.com).
