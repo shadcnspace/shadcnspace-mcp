@@ -2,6 +2,7 @@ import { z } from "zod";
 // Define schema for general component
 const ComponentSchema = z.object({
     name: z.string(),
+    title: z.string().optional(), // Only optional because of interactive-hover-button
     type: z.string(),
     description: z.string().optional(), // Only optional because of interactive-hover-button
 });
@@ -45,7 +46,7 @@ const ExampleDetailSchema = z.object({
 // Function to fetch UI components
 export async function fetchUIComponents() {
     try {
-        const response = await fetch("https://tailwind-admin.com/r/registry.json");
+        const response = await fetch("https://myshadcnspace.vercel.app/r/registry.json");
         if (!response.ok) {
             throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
         }
@@ -69,10 +70,38 @@ export async function fetchUIComponents() {
         return [];
     }
 }
+// Function to fetch UI blocks
+export async function fetchUIBlocks() {
+    try {
+        const response = await fetch("https://myshadcnspace.vercel.app/r/registry.json");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
+        }
+        const data = await response.json();
+        return data.items
+            .filter((item) => item.type === "registry:block")
+            .map((item) => {
+            try {
+                return ComponentSchema.parse({
+                    name: item.name,
+                    type: item.type,
+                    description: item.description,
+                    title: item.title,
+                });
+            }
+            catch (parseError) {
+                return null;
+            }
+        });
+    }
+    catch (error) {
+        return [];
+    }
+}
 // Function to fetch individual component details
 export async function fetchComponentDetails(name) {
     try {
-        const response = await fetch(`https://tailwind-admin.com/r/${name}.json`);
+        const response = await fetch(`https://myshadcnspace.vercel.app/r/${name}.json`);
         if (!response.ok) {
             throw new Error(`Failed to fetch component ${name}: ${response.statusText}`);
         }
@@ -84,13 +113,28 @@ export async function fetchComponentDetails(name) {
         throw error;
     }
 }
+// Function to fetch multiple component details
+export async function fetchMultipleComponentDetails(nameOrNames) {
+    const res = await fetch("https://myshadcnspace.vercel.app/r/registry.json");
+    const registry = await res.json();
+    let blocks = registry.items;
+    if (nameOrNames) {
+        const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
+        blocks = blocks.filter((b) => names.includes(b.name));
+    }
+    // Return only metadata + file paths
+    return blocks.map((b) => ({
+        name: b.name,
+        title: b.title,
+        files: b.files ?? [],
+    }));
+}
 // Function to fetch example components
 export async function fetchExampleComponents() {
     try {
-        const response = await fetch("https://tailwind-admin.com/r/registry.json");
+        const response = await fetch("https://myshadcnspace.vercel.app/r/registry.json");
         const data = await response.json();
-        return data.items
-            .map((item) => {
+        return data.items.map((item) => {
             return ExampleComponentSchema.parse({
                 name: item.name,
                 type: item.type,
@@ -107,7 +151,7 @@ export async function fetchExampleComponents() {
 // Function to fetch details for a specific example
 export async function fetchExampleDetails(exampleName) {
     try {
-        const response = await fetch(`https://tailwind-admin.com/r/${exampleName}`);
+        const response = await fetch(`https://myshadcnspace.vercel.app/r/${exampleName}`);
         if (!response.ok) {
             throw new Error(`Failed to fetch example details for ${exampleName}: ${response.statusText}`);
         }
