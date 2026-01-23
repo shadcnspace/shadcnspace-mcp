@@ -49,8 +49,6 @@ The server provides the following tools callable via MCP:
 
 
 
-
-
 ## Available Prompts
 
 The server provides the following prompts callable via MCP:
