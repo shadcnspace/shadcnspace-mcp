@@ -1,6 +1,6 @@
 {
   "name": "shadcnspace-mcp",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "MCP server for installing and composing shadcn space UI components",
   "type": "module",
   "main": "./dist/server.js",
