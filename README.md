@@ -31,6 +31,8 @@ Add to your IDE's MCP config:
   }
 }
 ```
+For more information visit our documentation of [**How to use MCP Server**](https://shadcnspace.com/docs/getting-started/mcp-server-docs)
+
 
 ## Available Tools
 
