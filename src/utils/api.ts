@@ -84,14 +84,14 @@ export async function fetchUIComponents() {
   }
 }
 
-// Function to fetch UI blocks more bolcks 
+// Function to fetch UI blocks more blocks 
 export async function fetchUIBlocks() {
   try {
     const response = await fetch("https://shadcnspace.com/r/registry.json");
 
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`,
+        `Failed to Fetch Registry.json : ${response.statusText} (Status: ${response.status})`,
       );
     }
     const data = await response.json();
