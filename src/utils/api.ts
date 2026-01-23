@@ -83,7 +83,8 @@ export async function fetchUIComponents() {
     return [];
   }
 }
-// Function to fetch UI blocks
+
+// Function to fetch UI blocks more bolcks 
 export async function fetchUIBlocks() {
   try {
     const response = await fetch("https://shadcnspace.com/r/registry.json");

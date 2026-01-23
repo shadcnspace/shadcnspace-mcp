@@ -46,10 +46,7 @@ The server provides the following tools callable via MCP:
 | `searchBlocks` | Search Shadcn Space blocks using keywords or tags. |
 | `listInstalledBlocks` | Lists all blocks that are currently installed in the project and get their files. |
 
-
-
-
-## Available Prompts
+### Available Prompts
 
 The server provides the following prompts callable via MCP:
 
