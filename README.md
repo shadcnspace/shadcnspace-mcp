@@ -1,7 +1,9 @@
 # shadcnspace-mcp
 
-Official ModelContextProtocol (MCP) server for [Shadcn Space](https://shadcnspace.com).
+Official Model Context Protocol (MCP) server for [Shadcn Space](https://shadcnspace.com).
+.
 
+This MCP server allows AI-powered IDEs and agents to discover, search, and install **Shadcn Space** UI blocks directly into your projects — no copy-paste required.
 ## Install MCP configuration
 ```bash
 npx shadcnspace-cli install <client>
@@ -37,7 +39,13 @@ The server provides the following tools callable via MCP:
 | Tool Name | Description |
 |-----------|-------------|
 | `listBlocks` | Provides a comprehensive list of all shadcnspace blocks. |
-| `addBlock` | Get full implementation details of a specific shadcnspace block by name. |
+| `listComponents` | Provides a comprehensive list of all shadcnspace components. |
+| `getBlockInstall` | Returns the official installation command for a specific Shadcn Space block. |
+| `searchBlocks` | Search Shadcn Space blocks using keywords or tags. |
+| `listInstalledBlocks` | Lists all blocks that are currently installed in the project and get their files. |
+
+
+
 
 ## Available Prompts
 
@@ -55,7 +63,7 @@ Once configured, you can ask questions like:
 
 > "List all available UI blocks"
 
-> "Give me the code for the download-banner block"
+> "Give me the code for the accordion-01 component"
 
 > "Create a landing page for a coffee shop using a hero-01 block, a 3-column feature grid, and a dark-themed footer."
 

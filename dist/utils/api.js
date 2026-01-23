@@ -46,7 +46,7 @@ const ExampleDetailSchema = z.object({
 // Function to fetch UI components
 export async function fetchUIComponents() {
     try {
-        const response = await fetch("https://tailwind-admin.com/r/registry.json");
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
         if (!response.ok) {
             throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
         }
@@ -73,7 +73,7 @@ export async function fetchUIComponents() {
 // Function to fetch UI blocks
 export async function fetchUIBlocks() {
     try {
-        const response = await fetch("https://tailwind-admin.com/r/registry.json");
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
         if (!response.ok) {
             throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
         }
@@ -101,7 +101,7 @@ export async function fetchUIBlocks() {
 // Function to fetch individual component details
 export async function fetchComponentDetails(name) {
     try {
-        const response = await fetch(`https://tailwind-admin.com/r/${name}.json`);
+        const response = await fetch(`https://shadcnspace.com/r/${name}.json`);
         if (!response.ok) {
             throw new Error(`Failed to fetch component ${name}: ${response.statusText}`);
         }
@@ -115,7 +115,7 @@ export async function fetchComponentDetails(name) {
 }
 // Function to fetch multiple component details
 export async function fetchMultipleComponentDetails(nameOrNames) {
-    const res = await fetch("https://tailwind-admin.com/r/registry.json");
+    const res = await fetch("https://shadcnspace.com/r/registry.json");
     const registry = await res.json();
     let blocks = registry.items;
     if (nameOrNames) {
@@ -132,7 +132,7 @@ export async function fetchMultipleComponentDetails(nameOrNames) {
 // Function to fetch example components
 export async function fetchExampleComponents() {
     try {
-        const response = await fetch("https://tailwind-admin.com/r/registry.json");
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
         const data = await response.json();
         return data.items.map((item) => {
             return ExampleComponentSchema.parse({
@@ -151,7 +151,7 @@ export async function fetchExampleComponents() {
 // Function to fetch details for a specific example
 export async function fetchExampleDetails(exampleName) {
     try {
-        const response = await fetch(`https://tailwind-admin.com/r/${exampleName}`);
+        const response = await fetch(`https://shadcnspace.com/r/${exampleName}`);
         if (!response.ok) {
             throw new Error(`Failed to fetch example details for ${exampleName}: ${response.statusText}`);
         }
