@@ -105,7 +105,7 @@ server.registerTool(
   },
   async ({ name }) => {
     try {
-      const componentDetails = await fetchComponentDetails(name);
+      const componentDetails = await fetchComponentDetails(name);      
       process.stderr.write(`Fetched ${componentDetails} blocks\n`);
 
       if (!componentDetails || !componentDetails.files?.length) {

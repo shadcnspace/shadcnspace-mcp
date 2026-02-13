@@ -1,12 +1,6 @@
 export declare function fetchUIComponents(): Promise<any>;
 export declare function fetchUIBlocks(): Promise<any>;
-export declare function fetchComponentDetails(name: string): Promise<{
-    name: string;
-    type: string;
-    files: {
-        content: string;
-    }[];
-}>;
+export declare function fetchComponentDetails(name: string): Promise<any>;
 type BlockMetadata = {
     name: string;
     title: string;
@@ -17,9 +11,9 @@ export declare function fetchExampleComponents(): Promise<any>;
 export declare function fetchExampleDetails(exampleName: string): Promise<{
     name: string;
     type: string;
+    description: string;
     files: {
         content: string;
     }[];
-    description: string;
 }>;
 export {};
