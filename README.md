@@ -1,7 +1,6 @@
 # shadcnspace-mcp
 
 Official Model Context Protocol (MCP) server for [Shadcn Space](https://shadcnspace.com).
-.
 
 This MCP server allows AI-powered IDEs and agents to discover, search, and install **Shadcn Space** UI blocks directly into your projects — no copy-paste required.
 ## Install MCP configuration
