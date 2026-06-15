@@ -48,6 +48,7 @@ The server provides the following tools callable via MCP:
 | `getPageInstall` | Returns the official installation command for a specific Shadcn Space page. |
 | `searchPages` | Search Shadcn Space pages using keywords or tags. |
 | `listInstalledPages` | Lists all pages that are currently installed in the project. |
+| `get_audit_checklist` | Returns strict workflow rules and guidelines for agents interacting with this MCP server. |
 
 > **Note:** All pages are PRO components, so you will need to have a valid license key to install and use them.
 
@@ -71,6 +72,10 @@ Once configured, you can ask questions like:
 > "Give me the code for the accordion-01 component"
 
 > "Create a landing page for a coffee shop using a hero-01 block, a 3-column feature grid, and a dark-themed footer."
+
+## Agent Instructions (Claude / Cursor / Windsurf)
+
+If you are using Claude Projects, Cursor, or Windsurf, we have prepared a set of instructions you can copy-paste to make your AI use this MCP Server flawlessly. See [claude-instructions.md](claude-instructions.md).
 
 ## Credits
 

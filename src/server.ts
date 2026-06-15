@@ -12,7 +12,7 @@ import {
 
 const server = new McpServer({
   name: "ShadcnSpace MCP",
-  version: "1.1.0",
+  version: "1.2.5",
   description:
     "Provides tools and prompts for exploring, installing, and customizing Shadcn Space blocks in a project. Agents can use it to list available blocks, install them, and guide content customization.",
 });
@@ -20,6 +20,74 @@ const server = new McpServer({
 // -----------------------------------------
 // Tools Registrations
 // -----------------------------------------
+
+// Register tool for getting Agent Skills/Instructions
+server.registerTool(
+  "get_audit_checklist",
+  {
+    title: "Get Agent Skills & Instructions",
+    description:
+      "CRITICAL: You MUST execute this tool BEFORE using any other tools in this MCP server. Returns the strict workflow rules and guidelines for agents interacting with Shadcn Space. Agents MUST read this first to understand how to handle free vs PRO components, package managers, and installation flows.",
+    inputSchema: z.object({}),
+  },
+  async () => {
+    const instructions = `
+# Shadcn Space Assistant Skill
+
+You are equipped with the \`shadcnspace-mcp\` server. Your goal is to help the user discover, install, and integrate Shadcn Space UI blocks and pages. 
+
+Follow this strict workflow when asked to create or modify UI:
+
+1. **Check Project Context**:
+   - Before doing anything, check the \`style\` field in the user's \`components.json\` to see whether they are using the \`radix\` or \`base\` style.
+   - Check the project's root directory for lockfiles (\`package-lock.json\`, \`pnpm-lock.yaml\`, \`yarn.lock\`, \`bun.lockb\`) to determine the correct package manager command (\`npx\`, \`pnpm dlx\`, \`yarn dlx\`, or \`bunx --bun\`).
+
+2. **Discover & Search**:
+   - If the user has a vague request (e.g., "I need a hero section"), use the \`searchBlocks\` or \`searchPages\` tool to find relevant matches.
+   - If you need to see everything available, use \`listBlocks\` or \`listPages\`.
+
+3. **Retrieve Installation Commands**:
+   - Once a block or page is identified, you MUST use the \`getBlockInstall\` or \`getPageInstall\` tool to fetch the official installation command. 
+   - *Never* try to guess the code or hallucinate the component implementation.
+
+4. **Install & License Handling**:
+   - Execute the installation command in the terminal using the correct package manager executor (e.g., \`pnpm dlx shadcn@latest add @shadcn-space/...\`).
+   - **Important:** We cannot know if a block is free or PRO before installing it. If the installation fails and gives an error requiring a license and email id, it means the component is PRO.
+   - When this happens, inform the user they must add their email and license key to \`components.json\` like this:
+     \`\`\`json
+     {
+       "registries": {
+         "@shadcn-space": {
+           "url": "https://shadcnspace.com/r/{name}.json",
+           "params": {
+             "email": "\${EMAIL}",
+             "license_key": "\${LICENSE_KEY}"
+           }
+         }
+       }
+     }
+     \`\`\`
+   - Only attempt the installation again after the user confirms they have configured \`components.json\`.
+
+5. **Integration & Customization**:
+   - Integrate the installed component into the user's page.
+   - You may safely modify visible text (headings, paragraphs, button labels).
+   - Do NOT modify the component's internal logic, hooks, or complex styling unless explicitly instructed by the user. (Refer to the \`customization-guidelines\` prompt if unsure).
+
+6. **Existing Blocks**:
+   - If you need to check what is already installed in the project, use \`listInstalledBlocks\` or \`listInstalledPages\`.
+`;
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: instructions,
+        },
+      ],
+    };
+  },
+);
 
 // Register tools for Listing Blocks
 server.registerTool(
@@ -121,8 +189,6 @@ server.registerTool(
         };
       }
 
-      const installCommand = `npx shadcn@latest add @shadcn-space/${name}`;
-
       return {
         content: [
           {
@@ -130,11 +196,18 @@ server.registerTool(
             text: `Block "${name}" found.
 
 AGENT RULE:
-You MUST install this component using the command below.
+You MUST install this component using the commands below depending on the user's project style. 
+Check components.json to determine if the style is 'base' or 'radix'.
+Check the project lockfile to determine the correct package manager executor (npx, pnpm dlx, yarn dlx, bunx --bun).
 You are NOT allowed to recreate, rewrite, or approximate this component.
 
-Install command:
-${installCommand}
+For Base style:
+<pm> shadcn@latest add @shadcn-space/${name}
+
+For Radix style:
+<pm> shadcn@latest add @shadcn-space/radix/${name}
+
+(Replace <pm> with npx, pnpm dlx, yarn dlx, or bunx --bun)
 `,
           },
         ],
@@ -300,8 +373,6 @@ server.registerTool(
         };
       }
 
-      const installCommand = `npx shadcn@latest add @shadcn-space/${name}`;
-
       return {
         content: [
           {
@@ -309,11 +380,18 @@ server.registerTool(
             text: `Page "${name}" found.
 
 AGENT RULE:
-You MUST install this page using the command below.
+You MUST install this page using the commands below depending on the user's project style. 
+Check components.json to determine if the style is 'base' or 'radix'.
+Check the project lockfile to determine the correct package manager executor (npx, pnpm dlx, yarn dlx, bunx --bun).
 You are NOT allowed to recreate, rewrite, or approximate this page.
 
-Install command:
-${installCommand}
+For Base style:
+<pm> shadcn@latest add @shadcn-space/pages/${name.replace(/^pages\//, "")}
+
+For Radix style:
+<pm> shadcn@latest add @shadcn-space/pages/radix/${name.replace(/^pages\//, "")}
+
+(Replace <pm> with npx, pnpm dlx, yarn dlx, or bunx --bun)
 `,
           },
         ],
