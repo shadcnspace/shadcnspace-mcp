@@ -44,6 +44,12 @@ The server provides the following tools callable via MCP:
 | `getBlockInstall` | Returns the official installation command for a specific Shadcn Space block. |
 | `searchBlocks` | Search Shadcn Space blocks using keywords or tags. |
 | `listInstalledBlocks` | Lists all blocks that are currently installed in the project and get their files. |
+| `listPages` | Provides a complete list of all Shadcn Space pages. |
+| `getPageInstall` | Returns the official installation command for a specific Shadcn Space page. |
+| `searchPages` | Search Shadcn Space pages using keywords or tags. |
+| `listInstalledPages` | Lists all pages that are currently installed in the project. |
+
+> **Note:** All pages are PRO components, so you will need to have a valid license key to install and use them.
 
 ### Available Prompts
 
@@ -53,6 +59,7 @@ The server provides the following prompts callable via MCP:
 |----------------|-------------|
 | `search`       | Find specific UI block by name. |
 | `create-ui`    | Create a new UI block using our exisitng blocks. |
+| `customization-guidelines` | Defines which parts of installed blocks can be safely modified. |
 
 
 ## Example Usage

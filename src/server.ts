@@ -7,6 +7,7 @@ import {
   fetchMultipleComponentDetails,
   fetchUIBlocks,
   fetchUIComponents,
+  fetchUIPages,
 } from "./utils/api.js";
 
 const server = new McpServer({
@@ -105,7 +106,7 @@ server.registerTool(
   },
   async ({ name }) => {
     try {
-      const componentDetails = await fetchComponentDetails(name);      
+      const componentDetails = await fetchComponentDetails(name);
       process.stderr.write(`Fetched ${componentDetails} blocks\n`);
 
       if (!componentDetails || !componentDetails.files?.length) {
@@ -220,6 +221,183 @@ server.registerTool(
           text: JSON.stringify(
             {
               blocks: normalized,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    };
+  },
+);
+
+// -----------------------------------------
+// Prompts Registrations
+// -----------------------------------------
+
+// Register tools for Listing Pages
+server.registerTool(
+  "listPages",
+  {
+    title: "List All Pages",
+    description:
+      "Provides a complete list of all Shadcn Space pages that can be used in a project. Agents can use this to explore available page types before deciding which ones to add or customize.",
+    inputSchema: z.object({}),
+  },
+  async () => {
+    try {
+      const uiPages = await fetchUIPages();
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(uiPages, null, 2),
+          },
+        ],
+      };
+    } catch {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Failed to fetch Shadcn Space Pages",
+          },
+        ],
+        isError: true,
+      };
+    }
+  },
+);
+
+// Register tools for adding a Page
+server.registerTool(
+  "getPageInstall",
+  {
+    title: "Get Page Installation Command",
+    description:
+      "Returns the official installation command for a specific Shadcn Space page. Agents can use this to add a page to the project automatically before customizing it. NOTE: All pages are PRO components. Agents MUST check components.json for a valid license key before attempting to install pages.",
+    inputSchema: z.object({
+      name: z
+        .string()
+        .describe("The exact name of the page, e.g., 'landing-page-01'."),
+    }),
+  },
+  async ({ name }) => {
+    try {
+      const componentDetails = await fetchComponentDetails(name);
+      process.stderr.write(`Fetched ${componentDetails} pages\n`);
+
+      if (!componentDetails || !componentDetails.files?.length) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Page "${name}" not found.`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      const installCommand = `npx shadcn@latest add @shadcn-space/${name}`;
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Page "${name}" found.
+
+AGENT RULE:
+You MUST install this page using the command below.
+You are NOT allowed to recreate, rewrite, or approximate this page.
+
+Install command:
+${installCommand}
+`,
+          },
+        ],
+      };
+    } catch {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Failed to fetch page "${name}"`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  },
+);
+
+// Register tools for Searching a Page by keyword
+server.registerTool(
+  "searchPages",
+  {
+    title: "Search Pages by Keyword",
+    description:
+      "Search Shadcn Space pages using keywords or tags. Agents can use this to find relevant pages when building a site based on user requirements or content type.",
+    inputSchema: z.object({
+      query: z
+        .string()
+        .describe("Keyword or tag to search for relevant pages."),
+    }),
+  },
+  async ({ query }) => {
+    const pages = await fetchUIPages();
+    const filtered = pages.filter(
+      (b: { name: string | string[]; tags: any[] }) =>
+        b.name.includes(query) || b.tags?.some((t) => t.includes(query)),
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(filtered, null, 2),
+        },
+      ],
+    };
+  },
+);
+
+// Register tools for Listing Installed Pages
+server.registerTool(
+  "listInstalledPages",
+  {
+    title: "List Installed Pages",
+    description:
+      "Lists all pages that are currently installed in the project. Agents can use this to determine which pages are available for customization or updating, and optionally filter by specific page names. NOTE: All pages are PRO components. Agents MUST check components.json for a valid license key before attempting to install pages.",
+    inputSchema: z.object({
+      names: z
+        .array(z.string())
+        .optional()
+        .describe("Optional list of page names to filter the installed pages."),
+    }),
+  },
+  async ({ names }) => {
+    // If no names provided → return all installed pages
+    const pages = names?.length
+      ? await fetchMultipleComponentDetails(names)
+      : await fetchUIPages();
+
+    const normalized = pages.map(
+      (b: { name: any; title: any; files: any }) => ({
+        name: b.name,
+        title: b.title,
+        files: b.files ?? [],
+      }),
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              pages: normalized,
             },
             null,
             2,

@@ -6,27 +6,6 @@ const ComponentSchema = z.object({
     type: z.string(),
     description: z.string().optional(), // Only optional because of interactive-hover-button
 });
-// Define schema for an individual example
-const ExampleSchema = z.object({
-    name: z.string(),
-    type: z.string(),
-    description: z.string(),
-    content: z.string(),
-});
-// Define schema for individual component with content and examples
-const IndividualComponentSchema = ComponentSchema.extend({
-    install: z.string(),
-    content: z.string(),
-    examples: z.array(ExampleSchema),
-});
-// Define schema for component detail response
-const ComponentDetailSchema = z.object({
-    name: z.string(),
-    type: z.string(),
-    files: z.array(z.object({
-        content: z.string(),
-    })),
-});
 // Define schema for example component
 const ExampleComponentSchema = z.object({
     name: z.string(),
@@ -46,7 +25,7 @@ const ExampleDetailSchema = z.object({
 // Function to fetch UI components
 export async function fetchUIComponents() {
     try {
-        const response = await fetch("https://stagdev.shadcnspace.com/r/registry.json");
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
         if (!response.ok) {
             throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
         }
@@ -70,10 +49,39 @@ export async function fetchUIComponents() {
         return [];
     }
 }
+// Function to fetch UI pages
+export async function fetchUIPages() {
+    try {
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`);
+        }
+        const data = await response.json();
+        return data.items
+            .filter((item) => item.type === "registry:page")
+            .map((item) => {
+            try {
+                return ComponentSchema.parse({
+                    name: item.name,
+                    type: item.type,
+                    description: item.description,
+                    title: item.title,
+                    isPro: item.isPro,
+                });
+            }
+            catch (parseError) {
+                return null;
+            }
+        });
+    }
+    catch (error) {
+        return [];
+    }
+}
 // Function to fetch UI blocks more blocks
 export async function fetchUIBlocks() {
     try {
-        const response = await fetch("https://stagdev.shadcnspace.com/r/registry.json");
+        const response = await fetch("https://shadcnspace.com/r/registry.json");
         if (!response.ok) {
             throw new Error(`Failed to Fetch Registry.json : ${response.statusText} (Status: ${response.status})`);
         }
@@ -87,6 +95,7 @@ export async function fetchUIBlocks() {
                     type: item.type,
                     description: item.description,
                     title: item.title,
+                    isPro: item.isPro,
                 });
             }
             catch (parseError) {
@@ -101,8 +110,7 @@ export async function fetchUIBlocks() {
 // Function to fetch individual component details
 export async function fetchComponentDetails(name) {
     try {
-        const response = await fetch(`https://stagdev.shadcnspace.com/r/registry.json`);
-        console.log("Response:", response);
+        const response = await fetch(`https://shadcnspace.com/r/registry.json`);
         if (!response.ok) {
             throw new Error(`Failed to fetch component ${name}: ${response.statusText}`);
         }
@@ -119,7 +127,7 @@ export async function fetchComponentDetails(name) {
 }
 // Function to fetch multiple component details
 export async function fetchMultipleComponentDetails(nameOrNames) {
-    const res = await fetch("https://stagdev.shadcnspace.com/r/registry.json?email=mihir.wrappixel@gmail.com&license_key=LIC-9DB993E1");
+    const res = await fetch("https://shadcnspace.com/r/registry.json");
     const registry = await res.json();
     let blocks = registry.items;
     if (nameOrNames) {
@@ -132,39 +140,5 @@ export async function fetchMultipleComponentDetails(nameOrNames) {
         title: b.title,
         files: b.files ?? [],
     }));
-}
-// Function to fetch example components
-export async function fetchExampleComponents() {
-    try {
-        const response = await fetch("https://stagdev.shadcnspace.com/r/registry.json");
-        const data = await response.json();
-        return data.items.map((item) => {
-            return ExampleComponentSchema.parse({
-                name: item.name,
-                type: item.type,
-                description: item.description,
-                registryDependencies: item.registryDependencies,
-            });
-        });
-    }
-    catch (error) {
-        console.error("Error fetching MagicUI example components:", error);
-        return [];
-    }
-}
-// Function to fetch details for a specific example
-export async function fetchExampleDetails(exampleName) {
-    try {
-        const response = await fetch(`https://stagdev.shadcnspace.com/r/${exampleName}`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch example details for ${exampleName}: ${response.statusText}`);
-        }
-        const data = await response.json();
-        return ExampleDetailSchema.parse(data);
-    }
-    catch (error) {
-        console.error(`Error fetching example details for ${exampleName}:`, error);
-        throw error;
-    }
 }
 //# sourceMappingURL=api.js.map

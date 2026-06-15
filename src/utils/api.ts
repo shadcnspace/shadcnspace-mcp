@@ -31,9 +31,7 @@ const ExampleDetailSchema = z.object({
 // Function to fetch UI components
 export async function fetchUIComponents() {
   try {
-    const response = await fetch(
-      "https://shadcnspace.com/r/registry.json",
-    );
+    const response = await fetch("https://shadcnspace.com/r/registry.json");
 
     if (!response.ok) {
       throw new Error(
@@ -60,12 +58,41 @@ export async function fetchUIComponents() {
   }
 }
 
+// Function to fetch UI pages
+export async function fetchUIPages() {
+  try {
+    const response = await fetch("https://shadcnspace.com/r/registry.json");
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch registry.json: ${response.statusText} (Status: ${response.status})`,
+      );
+    }
+    const data = await response.json();
+
+    return data.items
+      .filter((item: any) => item.type === "registry:page")
+      .map((item: any) => {
+        try {
+          return ComponentSchema.parse({
+            name: item.name,
+            type: item.type,
+            description: item.description,
+            title: item.title,
+            isPro: item.isPro,
+          });
+        } catch (parseError) {
+          return null;
+        }
+      });
+  } catch (error) {
+    return [];
+  }
+}
 // Function to fetch UI blocks more blocks
 export async function fetchUIBlocks() {
   try {
-    const response = await fetch(
-      "https://shadcnspace.com/r/registry.json",
-    );
+    const response = await fetch("https://shadcnspace.com/r/registry.json");
 
     if (!response.ok) {
       throw new Error(
@@ -83,6 +110,7 @@ export async function fetchUIBlocks() {
             type: item.type,
             description: item.description,
             title: item.title,
+            isPro: item.isPro,
           });
         } catch (parseError) {
           return null;
@@ -96,10 +124,8 @@ export async function fetchUIBlocks() {
 // Function to fetch individual component details
 export async function fetchComponentDetails(name: string) {
   try {
-    const response = await fetch(
-      `https://shadcnspace.com/r/registry.json`,
-    );
-    
+    const response = await fetch(`https://shadcnspace.com/r/registry.json`);
+
     if (!response.ok) {
       throw new Error(
         `Failed to fetch component ${name}: ${response.statusText}`,
@@ -112,7 +138,6 @@ export async function fetchComponentDetails(name: string) {
       return item.name === name;
     });
     return component;
-
   } catch (error) {
     console.error(`Error fetching component ${name}:`, error);
     throw error;
@@ -129,9 +154,7 @@ type BlockMetadata = {
 export async function fetchMultipleComponentDetails(
   nameOrNames?: string | string[],
 ): Promise<BlockMetadata[]> {
-  const res = await fetch(
-    "https://shadcnspace.com/r/registry.json",
-  );
+  const res = await fetch("https://shadcnspace.com/r/registry.json");
   const registry = await res.json();
   let blocks = registry.items;
 
